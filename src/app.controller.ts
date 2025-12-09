@@ -1,12 +1,13 @@
 import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
-
   @Get()
   getHello(): string {
-    return this.appService.getHello();
+    const now = new Date();
+    console.log(
+      `User Hit on base url at ${now.getDate()}-${now.getMonth()}-${now.getFullYear()} - ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`,
+    );
+    return 'Helo Todo App';
   }
 }
