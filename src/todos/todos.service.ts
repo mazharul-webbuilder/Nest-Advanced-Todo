@@ -15,4 +15,8 @@ export class TodosService {
     await todo.save();
     return todo;
   }
+
+  async index() {
+    return this.todoModel.find();
+  }
 }
