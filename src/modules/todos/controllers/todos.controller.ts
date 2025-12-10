@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Put,
 } from '@nestjs/common';
@@ -48,6 +49,13 @@ export class TodosController {
     @Body() updateTodoDto: UpdateTodoDto,
   ) {
     return await this.todoService.update(todoId, updateTodoDto);
+  }
+  /***
+   Mark as completed
+   */
+  @Patch('mark-as-completed/:id')
+  async markCompleted(@Param('id') taskId: string) {
+    return await this.todoService.markAsCompleted(taskId);
   }
 
   /***

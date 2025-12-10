@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
 import { Todo } from '../../../database/mongoose/schemas/todo.schema';
 import { TodoRepositoryInterface } from './interface/todo.repository.interface';
+import { TodoStatus } from '../../../common/enums/todo.status';
 
 @Injectable()
 export class TodoRepository implements TodoRepositoryInterface {
@@ -32,6 +33,9 @@ export class TodoRepository implements TodoRepositoryInterface {
 
   async update(id: string, data: Partial<Todo>): Promise<Todo | null> {
     return this.model.findByIdAndUpdate(id, data, { new: true });
+  }
+  markAsCompleted(id: string): Promise<null> {
+    return this.model.findByIdAndUpdate(id, { status: TodoStatus.COMPLETED });
   }
 
   async delete(id: string): Promise<void> {

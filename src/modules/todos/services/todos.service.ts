@@ -46,4 +46,12 @@ export class TodosService {
     await this.details(todoId);
     return await this.repo.delete(todoId);
   }
+
+  async markAsCompleted(taskId: string) {
+    const todo = await this.details(taskId);
+    if (todo.status === TodoStatus.COMPLETED) {
+      throw new BadRequestException(`Cannot update a completed todo`);
+    }
+    return await this.repo.markAsCompleted(taskId);
+  }
 }
