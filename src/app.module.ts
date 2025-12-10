@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { ConfigModule } from '@nestjs/config';
-import { TodosModule } from './todos/todos.module';
+import { TodosModule } from './modules/todos/todos.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { mongodbConfig } from './config/database/mongodb.config';
+import { mongodbConfig } from './config/mongodb.config';
 
 @Module({
   imports: [

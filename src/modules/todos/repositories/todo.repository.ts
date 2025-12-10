@@ -1,0 +1,40 @@
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { Injectable } from '@nestjs/common';
+import { Todo } from '../../../database/mongoose/schemas/todo.schema';
+import { TodoRepositoryInterface } from './interface/todo.repository.interface';
+
+@Injectable()
+export class TodoRepository implements TodoRepositoryInterface {
+  constructor(
+    @InjectModel(Todo.name)
+    private readonly model: Model<Todo>,
+  ) {}
+
+  async create(data: Partial<Todo>): Promise<Todo> {
+    return await this.model.create(data);
+  }
+
+  async findAll(page: number, limit: number) {
+    const skip = (page - 1) * limit;
+
+    const [items, total] = await Promise.all([
+      this.model.find().skip(skip).limit(limit).exec(),
+      this.model.countDocuments(),
+    ]);
+
+    return { items, total };
+  }
+
+  async findById(id: string): Promise<Todo | null> {
+    return this.model.findById(id);
+  }
+
+  async update(id: string, data: Partial<Todo>): Promise<Todo | null> {
+    return this.model.findByIdAndUpdate(id, data, { new: true });
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.model.findByIdAndDelete(id);
+  }
+}
