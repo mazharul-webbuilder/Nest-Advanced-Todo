@@ -41,4 +41,9 @@ export class TodosService {
 
     return await this.repo.update(todoId, updateTodoDto);
   }
+
+  async delete(todoId: string) {
+    await this.details(todoId);
+    return await this.repo.delete(todoId);
+  }
 }
