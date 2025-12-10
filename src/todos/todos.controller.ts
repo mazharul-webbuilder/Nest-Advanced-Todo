@@ -7,16 +7,21 @@ import { TodoCollectionPresenter } from '../common/presenters/todo-collection.pr
 @Controller('todos')
 export class TodosController {
   constructor(private readonly todoService: TodosService) {}
+
   @Get()
-  getTodos() {
-    console.log('fuck');
+  async getTodos() {
     const todos = await this.todoService.index();
-    const meta = { total: todos.length, perPage: 10, currentPage: 1 };
-    return new TodoCollectionPresenter(todos, meta);
+    const meta = { total: todos.length, perPage: 5, currentPage: 1 };
+
+    return {
+      message: 'Data Fetched Successfully',
+      data: new TodoCollectionPresenter(todos, meta),
+    };
   }
   @Post()
   async createTodo(@Body() requestData: CreateTodoDto) {
     const todo = await this.todoService.store(requestData);
+
     return {
       message: 'Todo created successfully',
       data: new TodoPresenter(todo),
