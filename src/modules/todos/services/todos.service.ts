@@ -1,6 +1,13 @@
-import { Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateTodoDto } from '../dtos/create-todo.dto';
 import type { TodoRepositoryInterface } from '../repositories/interface/todo.repository.interface';
+import { UpdateTodoDto } from '../dtos/update-todo.dto';
+import { TodoStatus } from '../../../common/enums/todo.status';
 
 @Injectable()
 export class TodosService {
@@ -18,6 +25,20 @@ export class TodosService {
   }
 
   async details(todoId: string) {
-    return await this.repo.findById(todoId);
+    const todo = await this.repo.findById(todoId);
+
+    if (!todo) {
+      throw new NotFoundException(`Todo with ID ${todoId} not found`);
+    }
+    return todo;
+  }
+  async update(todoId: string, updateTodoDto: UpdateTodoDto) {
+    const todo = await this.details(todoId);
+
+    if (todo.status === TodoStatus.COMPLETED) {
+      throw new BadRequestException(`Cannot update a completed todo`);
+    }
+
+    return await this.repo.update(todoId, updateTodoDto);
   }
 }
