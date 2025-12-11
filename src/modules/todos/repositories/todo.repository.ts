@@ -12,7 +12,7 @@ import { TodoStatus } from '../../../common/enums/todo.status';
 export class TodoRepository implements TodoRepositoryInterface {
   constructor(
     @InjectModel(Todo.name)
-    private readonly model: Model<Todo>,
+    private readonly model: Model<TodoDocument>,
   ) {}
 
   async create(data: Partial<Todo>): Promise<Todo> {

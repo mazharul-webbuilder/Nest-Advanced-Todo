@@ -15,6 +15,7 @@ import { UpdateTodoDto } from '../dtos/update-todo.dto';
 import { PaginationQueryDto } from '../../../common/dto/pagination-query.dto';
 import { TodoPresenter } from '../presenters/todo.presenter';
 import { TodoDocument } from '../../../database/mongoose/schemas/todo.schema';
+import { TodoCollectionPresenter } from '../presenters/todo-collection.presenter';
 
 @Controller('todos')
 export class TodosController {
@@ -24,8 +25,13 @@ export class TodosController {
    Create new todo
    */
   @Get()
-  async getTodos(@Query() paginationQueryDto: PaginationQueryDto) {
-    return await this.todoService.getTodos(paginationQueryDto);
+  async getTodos(
+    @Query() paginationQueryDto: PaginationQueryDto,
+  ): Promise<any> {
+    const { items, total } =
+      await this.todoService.getTodos(paginationQueryDto);
+
+    return new TodoCollectionPresenter(items, total).toJSON();
   }
 
   /***
