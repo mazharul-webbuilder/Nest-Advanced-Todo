@@ -34,7 +34,7 @@ export class TodoRepository implements TodoRepositoryInterface {
     return this.model.findById(id);
   }
 
-  async update(id: string, data: Partial<Todo>): Promise<Todo | null> {
+  async update(id: string, data: Partial<Todo>): Promise<TodoDocument | null> {
     return this.model.findByIdAndUpdate(id, data, { new: true });
   }
   markAsCompleted(id: string): Promise<null> {

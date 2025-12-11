@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -61,7 +62,15 @@ export class TodosController {
     @Param('id') todoId: string,
     @Body() updateTodoDto: UpdateTodoDto,
   ) {
-    return await this.todoService.update(todoId, updateTodoDto);
+    const updatedTodo: TodoDocument | null = await this.todoService.update(
+      todoId,
+      updateTodoDto,
+    );
+    if (!updatedTodo) {
+      throw new NotFoundException('Something went wrong');
+    }
+
+    return new TodoPresenter(updatedTodo).toJSON();
   }
   /***
    Mark as completed

@@ -10,7 +10,7 @@ export interface TodoRepositoryInterface {
     limit: number,
   ): Promise<{ items: TodoDocument[]; total: number }>;
   findById(id: string): Promise<TodoDocument | null>;
-  update(id: string, data: Partial<Todo>): Promise<Todo | null>;
+  update(id: string, data: Partial<Todo>): Promise<TodoDocument | null>;
   markAsCompleted(id: string): Promise<null>;
   delete(id: string): Promise<void>;
 }
