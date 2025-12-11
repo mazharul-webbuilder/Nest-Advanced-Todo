@@ -9,6 +9,7 @@ import type { TodoRepositoryInterface } from '../repositories/interface/todo.rep
 import { UpdateTodoDto } from '../dtos/update-todo.dto';
 import { TodoStatus } from '../../../common/enums/todo.status';
 import { PaginationQueryDto } from '../../../common/dto/pagination-query.dto';
+import { TodoDocument } from '../../../database/mongoose/schemas/todo.schema';
 
 @Injectable()
 export class TodosService {
@@ -27,9 +28,8 @@ export class TodosService {
     return await this.repo.create(createTodoDto);
   }
 
-  async details(todoId: string) {
+  async details(todoId: string): Promise<TodoDocument> {
     const todo = await this.repo.findById(todoId);
-
     if (!todo) {
       throw new NotFoundException(`Todo with ID ${todoId} not found`);
     }

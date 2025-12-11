@@ -1,7 +1,10 @@
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
-import { Todo } from '../../../database/mongoose/schemas/todo.schema';
+import {
+  Todo,
+  TodoDocument,
+} from '../../../database/mongoose/schemas/todo.schema';
 import { TodoRepositoryInterface } from './interface/todo.repository.interface';
 import { TodoStatus } from '../../../common/enums/todo.status';
 
@@ -27,7 +30,7 @@ export class TodoRepository implements TodoRepositoryInterface {
     return { items, total };
   }
 
-  async findById(id: string): Promise<Todo | null> {
+  async findById(id: string): Promise<TodoDocument | null> {
     return this.model.findById(id);
   }
 

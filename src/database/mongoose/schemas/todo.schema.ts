@@ -4,7 +4,10 @@ import { TodoPriorityStatus } from '../../../common/enums/todo-priority.status';
 import { TodoStatus } from '../../../common/enums/todo.status';
 
 // Custom Type
-export type TodoDocument = HydratedDocument<Todo>;
+export type TodoDocument = HydratedDocument<Todo> & {
+  createdAt: Date;
+  updatedAt: Date;
+};
 
 @Schema({ timestamps: true, versionKey: false })
 export class Todo {

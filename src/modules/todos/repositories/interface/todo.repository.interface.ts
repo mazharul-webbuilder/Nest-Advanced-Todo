@@ -1,4 +1,7 @@
-import { Todo } from '../../../../database/mongoose/schemas/todo.schema';
+import {
+  Todo,
+  TodoDocument,
+} from '../../../../database/mongoose/schemas/todo.schema';
 
 export interface TodoRepositoryInterface {
   create(data: Partial<Todo>): Promise<Todo>;
@@ -6,7 +9,7 @@ export interface TodoRepositoryInterface {
     page: number,
     limit: number,
   ): Promise<{ items: Todo[]; total: number }>;
-  findById(id: string): Promise<Todo | null>;
+  findById(id: string): Promise<TodoDocument | null>;
   update(id: string, data: Partial<Todo>): Promise<Todo | null>;
   markAsCompleted(id: string): Promise<null>;
   delete(id: string): Promise<void>;

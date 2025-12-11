@@ -14,6 +14,7 @@ import { TodosService } from '../services/todos.service';
 import { UpdateTodoDto } from '../dtos/update-todo.dto';
 import { PaginationQueryDto } from '../../../common/dto/pagination-query.dto';
 import { TodoPresenter } from '../presenters/todo.presenter';
+import { TodoDocument } from '../../../database/mongoose/schemas/todo.schema';
 
 @Controller('todos')
 export class TodosController {
@@ -40,8 +41,8 @@ export class TodosController {
    */
   @Get(':id')
   async getDetails(@Param('id') todoId: string) {
-    const todo = await this.todoService.details(todoId);
-    return new TodoPresenter(todo);
+    const todo: TodoDocument = await this.todoService.details(todoId);
+    return new TodoPresenter(todo).toJSON();
   }
 
   /***
