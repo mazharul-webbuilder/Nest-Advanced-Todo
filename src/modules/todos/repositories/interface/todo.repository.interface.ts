@@ -11,6 +11,6 @@ export interface TodoRepositoryInterface {
   ): Promise<{ items: TodoDocument[]; total: number }>;
   findById(id: string): Promise<TodoDocument | null>;
   update(id: string, data: Partial<Todo>): Promise<TodoDocument | null>;
-  markAsCompleted(id: string): Promise<null>;
+  markAsCompleted(id: string): Promise<TodoDocument | null>;
   delete(id: string): Promise<void>;
 }

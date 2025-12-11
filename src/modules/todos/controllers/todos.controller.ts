@@ -77,7 +77,12 @@ export class TodosController {
    */
   @Patch('mark-as-completed/:id')
   async markCompleted(@Param('id') taskId: string) {
-    return await this.todoService.markAsCompleted(taskId);
+    const completedTodo = await this.todoService.markAsCompleted(taskId);
+    if (!completedTodo) {
+      throw new NotFoundException('Something went wrong');
+    }
+
+    return new TodoPresenter(completedTodo).toJSON();
   }
 
   /***
