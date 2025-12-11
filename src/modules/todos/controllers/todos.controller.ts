@@ -39,7 +39,9 @@ export class TodosController {
    */
   @Post()
   async createTodo(@Body() createTodoDto: CreateTodoDto) {
-    return await this.todoService.store(createTodoDto);
+    const newTodo: TodoDocument = await this.todoService.store(createTodoDto);
+
+    return new TodoPresenter(newTodo).toJSON();
   }
 
   /***

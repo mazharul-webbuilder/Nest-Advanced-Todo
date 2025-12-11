@@ -15,7 +15,7 @@ export class TodoRepository implements TodoRepositoryInterface {
     private readonly model: Model<TodoDocument>,
   ) {}
 
-  async create(data: Partial<Todo>): Promise<Todo> {
+  async create(data: Partial<Todo>): Promise<TodoDocument> {
     return await this.model.create(data);
   }
 
@@ -23,7 +23,7 @@ export class TodoRepository implements TodoRepositoryInterface {
     const skip = (page - 1) * limit;
 
     const [items, total] = await Promise.all([
-      this.model.find().skip(skip).limit(limit).exec(),
+      this.model.find().sort({ createdAt: -1 }).skip(skip).limit(limit).exec(),
       this.model.countDocuments(),
     ]);
 

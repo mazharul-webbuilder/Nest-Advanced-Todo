@@ -4,7 +4,7 @@ import {
 } from '../../../../database/mongoose/schemas/todo.schema';
 
 export interface TodoRepositoryInterface {
-  create(data: Partial<Todo>): Promise<Todo>;
+  create(data: Partial<Todo>): Promise<TodoDocument>;
   findAll(
     page: number,
     limit: number,
