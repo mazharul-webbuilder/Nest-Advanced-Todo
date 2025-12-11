@@ -13,6 +13,7 @@ import { CreateTodoDto } from '../dtos/create-todo.dto';
 import { TodosService } from '../services/todos.service';
 import { UpdateTodoDto } from '../dtos/update-todo.dto';
 import { PaginationQueryDto } from '../../../common/dto/pagination-query.dto';
+import { TodoPresenter } from '../presenters/todo.presenter';
 
 @Controller('todos')
 export class TodosController {
@@ -39,7 +40,8 @@ export class TodosController {
    */
   @Get(':id')
   async getDetails(@Param('id') todoId: string) {
-    return await this.todoService.details(todoId);
+    const todo = await this.todoService.details(todoId);
+    return new TodoPresenter(todo);
   }
 
   /***
