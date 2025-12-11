@@ -7,10 +7,12 @@ import {
   Patch,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { CreateTodoDto } from '../dtos/create-todo.dto';
 import { TodosService } from '../services/todos.service';
 import { UpdateTodoDto } from '../dtos/update-todo.dto';
+import { PaginationQueryDto } from '../../../common/dto/pagination-query.dto';
 
 @Controller('todos')
 export class TodosController {
@@ -20,8 +22,8 @@ export class TodosController {
    Create new todo
    */
   @Get()
-  async getTodos() {
-    return await this.todoService.getTodos();
+  async getTodos(@Query() paginationQueryDto: PaginationQueryDto) {
+    return await this.todoService.getTodos(paginationQueryDto);
   }
 
   /***

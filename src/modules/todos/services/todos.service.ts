@@ -8,6 +8,7 @@ import { CreateTodoDto } from '../dtos/create-todo.dto';
 import type { TodoRepositoryInterface } from '../repositories/interface/todo.repository.interface';
 import { UpdateTodoDto } from '../dtos/update-todo.dto';
 import { TodoStatus } from '../../../common/enums/todo.status';
+import { PaginationQueryDto } from '../../../common/dto/pagination-query.dto';
 
 @Injectable()
 export class TodosService {
@@ -16,8 +17,10 @@ export class TodosService {
     private readonly repo: TodoRepositoryInterface,
   ) {}
 
-  async getTodos() {
-    return await this.repo.findAll(1, 1);
+  async getTodos(paginationQueryDto: PaginationQueryDto) {
+    const { page, limit } = paginationQueryDto;
+
+    return await this.repo.findAll(page, limit);
   }
 
   async store(createTodoDto: CreateTodoDto) {
