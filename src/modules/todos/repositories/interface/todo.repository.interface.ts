@@ -8,6 +8,7 @@ export interface TodoRepositoryInterface {
   findAll(
     page: number,
     limit: number,
+    search?: string,
   ): Promise<{ items: TodoDocument[]; total: number }>;
   findById(id: string): Promise<TodoDocument | null>;
   update(id: string, data: Partial<Todo>): Promise<TodoDocument | null>;

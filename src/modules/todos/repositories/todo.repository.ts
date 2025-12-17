@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
 import {
@@ -19,11 +19,21 @@ export class TodoRepository implements TodoRepositoryInterface {
     return await this.model.create(data);
   }
 
-  async findAll(page: number, limit: number) {
+  async findAll(page: number, limit: number, search?: string) {
     const skip = (page - 1) * limit;
 
+    const filter: FilterQuery<TodoDocument> = {};
+    if (search) {
+      filter.title = { $regex: search, $options: 'i' };
+    }
+
     const [items, total] = await Promise.all([
-      this.model.find().sort({ createdAt: -1 }).skip(skip).limit(limit).exec(),
+      this.model
+        .find(filter)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .exec(),
       this.model.countDocuments(),
     ]);
 
