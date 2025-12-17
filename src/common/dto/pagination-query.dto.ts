@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional, Max, Min } from 'class-validator';
+import { IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 import { appPaginationValue } from '../../config/app.config';
 
@@ -15,4 +15,8 @@ export class PaginationQueryDto {
   @Min(1)
   @Max(100)
   limit: number = appPaginationValue().defaultLimit;
+
+  @IsOptional()
+  @IsString()
+  search?: string;
 }

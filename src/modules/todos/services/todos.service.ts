@@ -19,9 +19,9 @@ export class TodosService {
   ) {}
 
   async getTodos(paginationQueryDto: PaginationQueryDto) {
-    const { page, limit } = paginationQueryDto;
+    const { page, limit, search } = paginationQueryDto;
 
-    return await this.repo.findAll(page, limit);
+    return await this.repo.findAll(page, limit, search);
   }
 
   async store(createTodoDto: CreateTodoDto) {
