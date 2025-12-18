@@ -28,15 +28,15 @@ export class TodosService {
     return await this.repo.create(userId, createTodoDto);
   }
 
-  async details(todoId: string): Promise<TodoDocument> {
-    const todo = await this.repo.findById(todoId);
+  async details(userId: string, todoId: string): Promise<TodoDocument> {
+    const todo = await this.repo.findById(userId, todoId);
     if (!todo) {
       throw new NotFoundException(`Todo with ID ${todoId} not found`);
     }
     return todo;
   }
-  async update(todoId: string, updateTodoDto: UpdateTodoDto) {
-    const todo = await this.details(todoId);
+  async update(userId: string, todoId: string, updateTodoDto: UpdateTodoDto) {
+    const todo = await this.details(userId, todoId);
 
     if (todo.status === TodoStatus.COMPLETED) {
       throw new BadRequestException(`Cannot update a completed todo`);
@@ -45,13 +45,13 @@ export class TodosService {
     return await this.repo.update(todoId, updateTodoDto);
   }
 
-  async delete(todoId: string) {
-    await this.details(todoId);
+  async delete(userId: string, todoId: string) {
+    await this.details(userId, todoId);
     return await this.repo.delete(todoId);
   }
 
-  async markAsCompleted(taskId: string) {
-    const todo = await this.details(taskId);
+  async markAsCompleted(userId: string, taskId: string) {
+    const todo = await this.details(userId, taskId);
     if (todo.status === TodoStatus.COMPLETED) {
       throw new BadRequestException(`Cannot update a completed todo`);
     }

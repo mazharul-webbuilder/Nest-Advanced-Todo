@@ -1,4 +1,4 @@
-import { HydratedDocument, Types } from 'mongoose';
+import mongoose, { HydratedDocument, Types } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { TodoPriorityStatus } from '../../../common/enums/todo-priority.status';
 import { TodoStatus } from '../../../common/enums/todo.status';
@@ -11,7 +11,7 @@ export type TodoDocument = HydratedDocument<Todo> & {
 
 @Schema({ timestamps: true, versionKey: false })
 export class Todo {
-  @Prop({ required: true, type: Types.ObjectId, ref: 'User' })
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
   user: Types.ObjectId;
   @Prop({ required: true, type: String })
   title: string;

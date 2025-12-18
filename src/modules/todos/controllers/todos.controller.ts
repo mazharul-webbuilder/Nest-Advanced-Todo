@@ -59,8 +59,11 @@ export class TodosController {
    Get todo details
    */
   @Get(':id')
-  async getDetails(@Param('id') todoId: string) {
-    const todo: TodoDocument = await this.todoService.details(todoId);
+  async getDetails(@CurrentUser() user: any, @Param('id') todoId: string) {
+    const todo: TodoDocument = await this.todoService.details(
+      user.userId,
+      todoId,
+    );
     return new TodoPresenter(todo).toJSON();
   }
 
@@ -69,10 +72,12 @@ export class TodosController {
    */
   @Put(':id')
   async updateTodo(
+    @CurrentUser() user: any,
     @Param('id') todoId: string,
     @Body() updateTodoDto: UpdateTodoDto,
   ) {
     const updatedTodo: TodoDocument | null = await this.todoService.update(
+      user.userId,
       todoId,
       updateTodoDto,
     );
@@ -86,8 +91,11 @@ export class TodosController {
    Mark as completed
    */
   @Patch('mark-as-completed/:id')
-  async markCompleted(@Param('id') taskId: string) {
-    const completedTodo = await this.todoService.markAsCompleted(taskId);
+  async markCompleted(@CurrentUser() user: any, @Param('id') taskId: string) {
+    const completedTodo = await this.todoService.markAsCompleted(
+      user.userId,
+      taskId,
+    );
     if (!completedTodo) {
       throw new NotFoundException('Something went wrong');
     }
@@ -99,7 +107,7 @@ export class TodosController {
    Get todo details
    */
   @Delete(':id')
-  async delete(@Param('id') todoId: string) {
-    return await this.todoService.delete(todoId);
+  async delete(@CurrentUser() user: any, @Param('id') todoId: string) {
+    return await this.todoService.delete(user.userId, todoId);
   }
 }

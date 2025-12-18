@@ -46,8 +46,11 @@ export class TodoRepository implements TodoRepositoryInterface {
     return { items, total };
   }
 
-  async findById(id: string): Promise<TodoDocument | null> {
-    return this.model.findById(id);
+  async findById(userId: string, id: string): Promise<TodoDocument | null> {
+    return this.model.findOne({
+      _id: new Types.ObjectId(id),
+      user: new Types.ObjectId(userId),
+    });
   }
 
   async update(id: string, data: Partial<Todo>): Promise<TodoDocument | null> {
