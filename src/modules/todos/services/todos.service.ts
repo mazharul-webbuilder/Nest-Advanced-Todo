@@ -18,7 +18,7 @@ export class TodosService {
     private readonly repo: TodoRepositoryInterface,
   ) {}
 
-  async getTodos(userId: any, paginationQueryDto: PaginationQueryDto) {
+  async getTodos(userId: string, paginationQueryDto: PaginationQueryDto) {
     const { page, limit, search } = paginationQueryDto;
 
     return await this.repo.findAll(userId, page, limit, search);

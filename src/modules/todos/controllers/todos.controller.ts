@@ -20,6 +20,7 @@ import { TodoPresenter } from '../presenters/todo.presenter';
 import { TodoDocument } from '../../../database/mongoose/schemas/todo.schema';
 import { TodoCollectionPresenter } from '../presenters/todo-collection.presenter';
 import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard';
+import { CurrentUser } from '../../../common/decorators/current-user.decorator';
 
 @UseGuards(JwtAuthGuard)
 @Controller('todos')
@@ -31,14 +32,13 @@ export class TodosController {
    */
   @Get()
   async getTodos(
-    @Req() req: any,
+    @CurrentUser() user: any,
     @Query() paginationQueryDto: PaginationQueryDto,
   ): Promise<any> {
     const { items, total } = await this.todoService.getTodos(
-      req.user.userId,
+      user.userId,
       paginationQueryDto,
     );
-
     return new TodoCollectionPresenter(items, total).toJSON();
   }
 
