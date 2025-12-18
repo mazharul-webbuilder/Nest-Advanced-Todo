@@ -1,4 +1,4 @@
-import { FilterQuery, Model } from 'mongoose';
+import { FilterQuery, Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
 import {
@@ -15,14 +15,19 @@ export class TodoRepository implements TodoRepositoryInterface {
     private readonly model: Model<TodoDocument>,
   ) {}
 
-  async create(data: Partial<Todo>): Promise<TodoDocument> {
+  async create(userId: string, data: Partial<Todo>): Promise<TodoDocument> {
+    data.user = new Types.ObjectId(userId);
     return await this.model.create(data);
   }
 
-  async findAll(page: number, limit: number, search?: string) {
+  async findAll(userId: string, page: number, limit: number, search?: string) {
     const skip = (page - 1) * limit;
 
-    const filter: FilterQuery<TodoDocument> = {};
+    // 1. Convert string to ObjectId
+    const filter: FilterQuery<TodoDocument> = {
+      user: new Types.ObjectId(userId),
+    };
+
     if (search) {
       filter.title = { $regex: search, $options: 'i' };
     }
@@ -34,14 +39,18 @@ export class TodoRepository implements TodoRepositoryInterface {
         .skip(skip)
         .limit(limit)
         .exec(),
-      this.model.countDocuments(),
+      // 2. Pass the filter here too, otherwise you count every user's todos
+      this.model.countDocuments(filter),
     ]);
 
     return { items, total };
   }
 
-  async findById(id: string): Promise<TodoDocument | null> {
-    return this.model.findById(id);
+  async findById(userId: string, id: string): Promise<TodoDocument | null> {
+    return this.model.findOne({
+      _id: new Types.ObjectId(id),
+      user: new Types.ObjectId(userId),
+    });
   }
 
   async update(id: string, data: Partial<Todo>): Promise<TodoDocument | null> {

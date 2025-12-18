@@ -9,6 +9,8 @@ import {
   Post,
   Put,
   Query,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateTodoDto } from '../dtos/create-todo.dto';
 import { TodosService } from '../services/todos.service';
@@ -17,7 +19,10 @@ import { PaginationQueryDto } from '../../../common/dto/pagination-query.dto';
 import { TodoPresenter } from '../presenters/todo.presenter';
 import { TodoDocument } from '../../../database/mongoose/schemas/todo.schema';
 import { TodoCollectionPresenter } from '../presenters/todo-collection.presenter';
+import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard';
+import { CurrentUser } from '../../../common/decorators/current-user.decorator';
 
+@UseGuards(JwtAuthGuard)
 @Controller('todos')
 export class TodosController {
   constructor(private readonly todoService: TodosService) {}
@@ -27,11 +32,13 @@ export class TodosController {
    */
   @Get()
   async getTodos(
+    @CurrentUser() user: any,
     @Query() paginationQueryDto: PaginationQueryDto,
   ): Promise<any> {
-    const { items, total } =
-      await this.todoService.getTodos(paginationQueryDto);
-
+    const { items, total } = await this.todoService.getTodos(
+      user.userId,
+      paginationQueryDto,
+    );
     return new TodoCollectionPresenter(items, total).toJSON();
   }
 
@@ -39,8 +46,11 @@ export class TodosController {
    Create new todo
    */
   @Post()
-  async createTodo(@Body() createTodoDto: CreateTodoDto) {
-    const newTodo: TodoDocument = await this.todoService.store(createTodoDto);
+  async createTodo(@Req() req: any, @Body() createTodoDto: CreateTodoDto) {
+    const newTodo: TodoDocument = await this.todoService.store(
+      req.user.userId,
+      createTodoDto,
+    );
 
     return new TodoPresenter(newTodo).toJSON();
   }
@@ -49,8 +59,11 @@ export class TodosController {
    Get todo details
    */
   @Get(':id')
-  async getDetails(@Param('id') todoId: string) {
-    const todo: TodoDocument = await this.todoService.details(todoId);
+  async getDetails(@CurrentUser() user: any, @Param('id') todoId: string) {
+    const todo: TodoDocument = await this.todoService.details(
+      user.userId,
+      todoId,
+    );
     return new TodoPresenter(todo).toJSON();
   }
 
@@ -59,10 +72,12 @@ export class TodosController {
    */
   @Put(':id')
   async updateTodo(
+    @CurrentUser() user: any,
     @Param('id') todoId: string,
     @Body() updateTodoDto: UpdateTodoDto,
   ) {
     const updatedTodo: TodoDocument | null = await this.todoService.update(
+      user.userId,
       todoId,
       updateTodoDto,
     );
@@ -76,8 +91,11 @@ export class TodosController {
    Mark as completed
    */
   @Patch('mark-as-completed/:id')
-  async markCompleted(@Param('id') taskId: string) {
-    const completedTodo = await this.todoService.markAsCompleted(taskId);
+  async markCompleted(@CurrentUser() user: any, @Param('id') taskId: string) {
+    const completedTodo = await this.todoService.markAsCompleted(
+      user.userId,
+      taskId,
+    );
     if (!completedTodo) {
       throw new NotFoundException('Something went wrong');
     }
@@ -89,7 +107,7 @@ export class TodosController {
    Get todo details
    */
   @Delete(':id')
-  async delete(@Param('id') todoId: string) {
-    return await this.todoService.delete(todoId);
+  async delete(@CurrentUser() user: any, @Param('id') todoId: string) {
+    return await this.todoService.delete(user.userId, todoId);
   }
 }
