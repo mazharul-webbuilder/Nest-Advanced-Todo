@@ -21,7 +21,6 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async getProfile(@Req() req: any) {
-    console.log('hit on profile api');
     return req.user;
   }
 }
