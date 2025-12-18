@@ -18,14 +18,14 @@ export class TodosService {
     private readonly repo: TodoRepositoryInterface,
   ) {}
 
-  async getTodos(paginationQueryDto: PaginationQueryDto) {
+  async getTodos(userId: any, paginationQueryDto: PaginationQueryDto) {
     const { page, limit, search } = paginationQueryDto;
 
-    return await this.repo.findAll(page, limit, search);
+    return await this.repo.findAll(userId, page, limit, search);
   }
 
-  async store(createTodoDto: CreateTodoDto) {
-    return await this.repo.create(createTodoDto);
+  async store(userId: string, createTodoDto: CreateTodoDto) {
+    return await this.repo.create(userId, createTodoDto);
   }
 
   async details(todoId: string): Promise<TodoDocument> {

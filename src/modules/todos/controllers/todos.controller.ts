@@ -9,6 +9,8 @@ import {
   Post,
   Put,
   Query,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateTodoDto } from '../dtos/create-todo.dto';
 import { TodosService } from '../services/todos.service';
@@ -17,7 +19,9 @@ import { PaginationQueryDto } from '../../../common/dto/pagination-query.dto';
 import { TodoPresenter } from '../presenters/todo.presenter';
 import { TodoDocument } from '../../../database/mongoose/schemas/todo.schema';
 import { TodoCollectionPresenter } from '../presenters/todo-collection.presenter';
+import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('todos')
 export class TodosController {
   constructor(private readonly todoService: TodosService) {}
@@ -27,10 +31,13 @@ export class TodosController {
    */
   @Get()
   async getTodos(
+    @Req() req: any,
     @Query() paginationQueryDto: PaginationQueryDto,
   ): Promise<any> {
-    const { items, total } =
-      await this.todoService.getTodos(paginationQueryDto);
+    const { items, total } = await this.todoService.getTodos(
+      req.user.userId,
+      paginationQueryDto,
+    );
 
     return new TodoCollectionPresenter(items, total).toJSON();
   }
@@ -39,8 +46,11 @@ export class TodosController {
    Create new todo
    */
   @Post()
-  async createTodo(@Body() createTodoDto: CreateTodoDto) {
-    const newTodo: TodoDocument = await this.todoService.store(createTodoDto);
+  async createTodo(@Req() req: any, @Body() createTodoDto: CreateTodoDto) {
+    const newTodo: TodoDocument = await this.todoService.store(
+      req.user.userId,
+      createTodoDto,
+    );
 
     return new TodoPresenter(newTodo).toJSON();
   }
