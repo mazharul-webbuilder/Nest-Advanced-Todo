@@ -6,18 +6,20 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { mongodbConfig } from './config/mongodb.config';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
+import { MailModule } from './modules/mail/mail.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    TodosModule,
     MongooseModule.forRootAsync({
       useFactory: mongodbConfig,
     }),
+    TodosModule,
     AuthModule,
     UsersModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [],
