@@ -22,10 +22,15 @@ import { TodoCollectionPresenter } from '../presenters/todo-collection.presenter
 import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../../common/decorators/current-user.decorator';
 
+import { TodoReminderService } from '../services/todo-reminder.service';
+
 @UseGuards(JwtAuthGuard)
 @Controller('todos')
 export class TodosController {
-  constructor(private readonly todoService: TodosService) {}
+  constructor(
+    private readonly todoService: TodosService,
+    private readonly reminderService: TodoReminderService,
+  ) {}
 
   /***
    Create new todo
@@ -109,5 +114,14 @@ export class TodosController {
   @Delete(':id')
   async delete(@CurrentUser() user: any, @Param('id') todoId: string) {
     return await this.todoService.delete(user.userId, todoId);
+  }
+
+  /***
+   * Manually trigger overdue reminder check (for testing)
+   */
+  @Post('check-overdue')
+  async checkOverdue() {
+    await this.reminderService.handleOverdueTodoReminders();
+    return { message: 'Overdue check triggered manually' };
   }
 }

@@ -23,6 +23,8 @@ export class Todo {
   priority: TodoPriorityStatus;
   @Prop({ required: true, enum: TodoStatus, default: TodoStatus.NOT_STARTED })
   status: TodoStatus;
+  @Prop({ type: Boolean, default: false })
+  isNotified: boolean;
 }
 
 export const TodoSchema = SchemaFactory.createForClass(Todo);

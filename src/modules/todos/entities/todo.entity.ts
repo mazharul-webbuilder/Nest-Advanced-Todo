@@ -8,6 +8,7 @@ export class TodoEntity {
   dueDate: Date;
   priority: TodoPriorityStatus;
   status: TodoStatus;
+  isNotified: boolean;
   createdAt: Date;
   updatedAt: Date;
 
